@@ -1,0 +1,10 @@
+{
+  "profiles": {
+    "NMSMemorizationApp (Package)": {
+      "commandName": "MsixPackage"
+    },
+    "NMSMemorizationApp (Unpackaged)": {
+      "commandName": "Project"
+    }
+  }
+}
