@@ -1,0 +1,147 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Page
+    x:Class="NMSMemorizationApp.Page.Memorization"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="using:NMSMemorizationApp.Page"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    mc:Ignorable="d"
+    Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
+
+    <Grid>
+        <Grid.Resources>
+            <Storyboard x:Name="AniOpenSetting">
+                <DoubleAnimationUsingKeyFrames EnableDependentAnimation="True" 
+                                   Storyboard.TargetProperty="(FrameworkElement.Height)" 
+                                   Storyboard.TargetName="grdSettings">
+                    <EasingDoubleKeyFrame KeyTime="0:0:0.2" Value="160"/>
+                </DoubleAnimationUsingKeyFrames>
+            </Storyboard>
+            <Storyboard x:Name="AniCloseSetting">
+                <DoubleAnimationUsingKeyFrames EnableDependentAnimation="True" 
+                       Storyboard.TargetProperty="(FrameworkElement.Height)" 
+                       Storyboard.TargetName="grdSettings">
+                    <EasingDoubleKeyFrame KeyTime="0:0:0.2" Value="0"/>
+                </DoubleAnimationUsingKeyFrames>
+            </Storyboard>
+        </Grid.Resources>
+        <Grid Height="50" Width="400" Margin="0,0,0,600">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="300"/>
+                <ColumnDefinition/>
+            </Grid.ColumnDefinitions>
+            <ProgressBar Grid.Column="0" x:Name="progressBar1" Width="280" Value="0" Maximum="0" HorizontalAlignment="Right" VerticalAlignment="Center"/>
+            <TextBlock Grid.Column="1" HorizontalAlignment="Center" VerticalAlignment="Center" Text="00/00"/>
+        </Grid>
+        <Border Height="50" Width="400" Margin="0,0,0,500" BorderBrush="#f0f0f0" BorderThickness="1" CornerRadius="4,4,4,4" Background="#fbfbfb">
+            <TextBlock TextWrapping="Wrap" HorizontalAlignment="Center" VerticalAlignment="Center"
+                    Text="문제" FontSize="16" ScrollViewer.VerticalScrollBarVisibility="Auto"/>
+        </Border>
+        <TextBox x:Name="txtQuestion" AcceptsReturn="True" TextWrapping="Wrap" MaxHeight="200" Width="400" Margin="0,0,0,250" BorderBrush="#f0f0f0" BorderThickness="1" CornerRadius="4,4,4,4" Background="White" 
+        ScrollViewer.VerticalScrollBarVisibility="Auto" IsReadOnly="True"/>
+        <Button Height="150" Grid.Column="0" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="0,0,460,0">
+            <StackPanel Orientation="Horizontal">
+                <SymbolIcon Symbol="Previous"/>
+            </StackPanel>
+            <Button.Resources>
+                <ResourceDictionary>
+                    <ResourceDictionary.ThemeDictionaries>
+                        <ResourceDictionary x:Key="Light">
+                            <SolidColorBrush x:Key="ButtonBackgroundPointerOver" Color="#B0A695"/>
+                        </ResourceDictionary>
+                    </ResourceDictionary.ThemeDictionaries>
+                </ResourceDictionary>
+            </Button.Resources>
+        </Button>
+        <Button Height="150" Grid.Column="0" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="460,0,0,0">
+            <StackPanel Orientation="Horizontal">
+                <SymbolIcon Symbol="Next"/>
+            </StackPanel>
+            <Button.Resources>
+                <ResourceDictionary>
+                    <ResourceDictionary.ThemeDictionaries>
+                        <ResourceDictionary x:Key="Light">
+                            <SolidColorBrush x:Key="ButtonBackgroundPointerOver" Color="#B0A695"/>
+                        </ResourceDictionary>
+                    </ResourceDictionary.ThemeDictionaries>
+                </ResourceDictionary>
+            </Button.Resources>
+        </Button>
+        <Expander Height="250" Width="400" Margin="0,200,0,0" HorizontalAlignment="Center" VerticalAlignment="Center" Background="#e6e6e6">
+            <Expander.Header>
+                <TextBlock Text="정답"/>
+            </Expander.Header>
+            <Expander.Content>
+                <ScrollViewer>
+                    <TextBlock x:Name="txtAnswer" TextWrapping="Wrap"/>
+                </ScrollViewer>
+            </Expander.Content>
+        </Expander>
+        <Grid Height="50" Width="400" Margin="0,500,0,0">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="200"/>
+                <ColumnDefinition/>
+            </Grid.ColumnDefinitions>
+            <Button Grid.Column="0" HorizontalAlignment="Center" >
+                <StackPanel Orientation="Horizontal">
+                    <TextBlock Text="암기 완료" />
+                    <SymbolIcon Symbol="Accept" Foreground="#128b44" Margin="10,0,0,0"/>
+                </StackPanel>
+                <Button.Resources>
+                    <ResourceDictionary>
+                        <ResourceDictionary.ThemeDictionaries>
+                            <ResourceDictionary x:Key="Light">
+                                <SolidColorBrush x:Key="ButtonBackgroundPointerOver" Color="#40128b44"/>
+                            </ResourceDictionary>
+                        </ResourceDictionary.ThemeDictionaries>
+                    </ResourceDictionary>
+                </Button.Resources>
+            </Button>
+            <Button Grid.Column="1" HorizontalAlignment="Center" >
+                <StackPanel Orientation="Horizontal">
+                    <TextBlock Text="암기 실패" />
+                    <SymbolIcon Symbol="Cancel" Foreground="#c50500" Margin="10,0,0,0"/>
+                </StackPanel>
+                <Button.Resources>
+                    <ResourceDictionary>
+                        <ResourceDictionary.ThemeDictionaries>
+                            <ResourceDictionary x:Key="Light">
+                                <SolidColorBrush x:Key="ButtonBackgroundPointerOver" Color="#40c50500"/>
+                            </ResourceDictionary>
+                        </ResourceDictionary.ThemeDictionaries>
+                    </ResourceDictionary>
+                </Button.Resources>
+            </Button>
+        </Grid>
+        <Button x:Name="btnSetting" HorizontalAlignment="Right" VerticalAlignment="Top" Margin="0,40,40,0" Tag="open" Click="BtnSetting_OnClick">
+            <Viewbox MaxHeight="40" MaxWidth="40">
+                <SymbolIcon Symbol="Setting"/>
+            </Viewbox>
+        </Button>
+        <Grid x:Name="grdSettings" Width="300" Height="0" HorizontalAlignment="Right" VerticalAlignment="Top" Margin="0,100,40,0" Background="#f7f7f7" BorderBrush="#cccccc" BorderThickness="1">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="200"/>
+                <ColumnDefinition/>
+            </Grid.ColumnDefinitions>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="auto"/>
+                <RowDefinition Height="auto"/>
+                <RowDefinition Height="auto"/>
+            </Grid.RowDefinitions>
+            <TextBox Grid.Row="0" Grid.ColumnSpan="2" Margin="10,10,10,0" Width="278" Header="CSV파일이 있는 폴더 경로 입력" PlaceholderText="ex) C:\Users" HorizontalAlignment="Left"/>
+            <TextBlock Grid.Row="1" Grid.Column="0" Text="순서 랜덤" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+            <ToggleSwitch Grid.Row="1" Grid.Column="1" x:Name="lightToggle"/>
+            <TextBlock Grid.Row="2" Grid.Column="0" Text="암기할 카드 종류" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+            <DropDownButton Grid.Row="2" Grid.Column="1" Content="암기중" x:Name="FieldStrength">
+                <DropDownButton.Flyout>
+                    <MenuFlyout>
+                        <MenuFlyoutItem Text="암기중"/>
+                        <MenuFlyoutItem Text="암기완료"/>
+                        <MenuFlyoutItem Text="전체"/>
+                    </MenuFlyout>
+                </DropDownButton.Flyout>
+            </DropDownButton>
+        </Grid>
+    </Grid>
+</Page>

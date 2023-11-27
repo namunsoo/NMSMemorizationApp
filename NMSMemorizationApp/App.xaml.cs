@@ -6,6 +6,7 @@ using Microsoft.UI.Xaml.Input;
 using Microsoft.UI.Xaml.Media;
 using Microsoft.UI.Xaml.Navigation;
 using Microsoft.UI.Xaml.Shapes;
+using NMSMemorizationApp.Page;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -44,6 +45,12 @@ namespace NMSMemorizationApp
 			m_window = new MainWindow();
 			m_window.Activate();
 		}
+
+		private void Frame_NavigationFailed(object sender, NavigationFailedEventArgs e)
+		{
+			throw new Exception("Failed to load Page " + e.SourcePageType.FullName);
+		}
+
 
 		private Window m_window;
 	}

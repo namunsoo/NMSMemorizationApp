@@ -1,3 +1,4 @@
+using ABI.System;
 using Microsoft.UI;
 using Microsoft.UI.Windowing;
 using Microsoft.UI.Xaml;
@@ -8,6 +9,7 @@ using Microsoft.UI.Xaml.Input;
 using Microsoft.UI.Xaml.Media;
 using Microsoft.UI.Xaml.Navigation;
 using NMSMemorizationApp.Model;
+using NMSMemorizationApp.Page;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -16,6 +18,7 @@ using System.Runtime.InteropServices;
 using System.Runtime.InteropServices.WindowsRuntime;
 using Windows.Foundation;
 using Windows.Foundation.Collections;
+using Windows.UI.ApplicationSettings;
 
 // To learn more about WinUI, the WinUI project structure,
 // and more about our project templates, see: http://aka.ms/winui-project-info.
@@ -124,8 +127,8 @@ namespace NMSMemorizationApp
 		public MainWindow()
 		{
 			this.InitializeComponent();
+			this.ContentFrame.Navigate(typeof(Memorization));
 			RegisterWindowMinMax(this);
-			GetMemoryCardData();
 
 			#region [| MinMax없이 고정 사이즈로 열기 |]
 			//IntPtr hWnd = WinRT.Interop.WindowNative.GetWindowHandle(this); // m_window in App.cs
@@ -134,42 +137,19 @@ namespace NMSMemorizationApp
 			//appWindow.Resize(new Windows.Graphics.SizeInt32 { Width = 480, Height = 800 });
 			#endregion
 		}
-		
-		private void GetMemoryCardData()
+
+		private void NavigationViewItem_Tapped(object sender, TappedRoutedEventArgs e)
 		{
-			DirectoryInfo directoryInfo = new DirectoryInfo("C:\\Users\\namunsoo\\Downloads\\Test");
-			string fileName = string.Empty;
-			string filePath = string.Empty;
-			try
+			NavigationViewItem navigationViewItem = sender as NavigationViewItem;
+			if(navigationViewItem.Tag.ToString().Equals("MakeCards"))
 			{
-				if (directoryInfo.Exists)
-				{
-					//foreach (FileInfo file in directoryInfo.GetFiles())
-					//{
-					//	if (file.Extension.ToLower().CompareTo(".csv") == 0)
-					//	{
-					//		fileName = file.Name.Substring(0, file.Name.Length - 5);
-					//		filePath = file.FullName;
-					//		SetCard(fileName, filePath);
-					//	}
-					//}
-					this.txtBlkAnswer.Text = "폴더 있음";
-					this.question.Text = "폴더 있음";
-				} else
-				{
-					this.txtBlkAnswer.Text = "폴더가 존재하지 않습니다.";
-					this.question.Text = "폴더가 존재하지 않습니다.";
-				}
-			}catch (Exception ex)
+				this.ContentFrame.Navigate(typeof(MakeCards));
+				//this.memorizeOption.Visibility = Visibility.Collapsed;
+			} else
 			{
-				this.txtBlkAnswer.Text = "데이터 가져오다 예상하지 못한 오류 발생";
-				this.question.Text = "데이터 가져오다 예상하지 못한 오류 발생";
+				this.ContentFrame.Navigate(typeof(Memorization));
+				//this.memorizeOption.Visibility = Visibility.Visible;
 			}
 		}
-
-		private void SetCard(string fileName, string filePath)
-		{
-		}
-
 	}
 }
