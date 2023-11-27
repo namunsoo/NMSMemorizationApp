@@ -7,6 +7,7 @@ using Microsoft.UI.Xaml.Data;
 using Microsoft.UI.Xaml.Input;
 using Microsoft.UI.Xaml.Media;
 using Microsoft.UI.Xaml.Navigation;
+using NMSMemorizationApp.Model;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -27,6 +28,8 @@ namespace NMSMemorizationApp
 	public sealed partial class MainWindow : Window
 	{
 		#region [| Property |]
+		private List<CardInfo> cardList = new List<CardInfo>();
+
 		private static WinProc newWndProc = null;
 		private static IntPtr oldWndProc = IntPtr.Zero;
 		private delegate IntPtr WinProc(IntPtr hWnd, WindowMessage Msg, IntPtr wParam, IntPtr lParam);
@@ -49,6 +52,7 @@ namespace NMSMemorizationApp
 		//public static int MaxWindowHeight { get; set; } = 1600;
 		#endregion
 
+		#region [| 프로그램 창 MinMax |]
 		private struct POINT
 		{
 			public int x;
@@ -115,12 +119,13 @@ namespace NMSMemorizationApp
 			else
 				return new IntPtr(SetWindowLong32(hWnd, nIndex, newProc));
 		}
-
+		#endregion
 
 		public MainWindow()
 		{
 			this.InitializeComponent();
 			RegisterWindowMinMax(this);
+			GetMemoryCardData();
 
 			#region [| MinMax없이 고정 사이즈로 열기 |]
 			//IntPtr hWnd = WinRT.Interop.WindowNative.GetWindowHandle(this); // m_window in App.cs
@@ -130,5 +135,41 @@ namespace NMSMemorizationApp
 			#endregion
 		}
 		
+		private void GetMemoryCardData()
+		{
+			DirectoryInfo directoryInfo = new DirectoryInfo("C:\\Users\\namunsoo\\Downloads\\Test");
+			string fileName = string.Empty;
+			string filePath = string.Empty;
+			try
+			{
+				if (directoryInfo.Exists)
+				{
+					//foreach (FileInfo file in directoryInfo.GetFiles())
+					//{
+					//	if (file.Extension.ToLower().CompareTo(".csv") == 0)
+					//	{
+					//		fileName = file.Name.Substring(0, file.Name.Length - 5);
+					//		filePath = file.FullName;
+					//		SetCard(fileName, filePath);
+					//	}
+					//}
+					this.txtBlkAnswer.Text = "폴더 있음";
+					this.question.Text = "폴더 있음";
+				} else
+				{
+					this.txtBlkAnswer.Text = "폴더가 존재하지 않습니다.";
+					this.question.Text = "폴더가 존재하지 않습니다.";
+				}
+			}catch (Exception ex)
+			{
+				this.txtBlkAnswer.Text = "데이터 가져오다 예상하지 못한 오류 발생";
+				this.question.Text = "데이터 가져오다 예상하지 못한 오류 발생";
+			}
+		}
+
+		private void SetCard(string fileName, string filePath)
+		{
+		}
+
 	}
 }
