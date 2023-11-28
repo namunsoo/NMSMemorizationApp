@@ -31,8 +31,6 @@ namespace NMSMemorizationApp
 	public sealed partial class MainWindow : Window
 	{
 		#region [| Property |]
-		private List<CardInfo> cardList = new List<CardInfo>();
-
 		private static WinProc newWndProc = null;
 		private static IntPtr oldWndProc = IntPtr.Zero;
 		private delegate IntPtr WinProc(IntPtr hWnd, WindowMessage Msg, IntPtr wParam, IntPtr lParam);

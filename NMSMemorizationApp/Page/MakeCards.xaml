@@ -14,8 +14,8 @@
                 <ColumnDefinition Width="300"/>
                 <ColumnDefinition/>
             </Grid.ColumnDefinitions>
-            <ProgressBar Grid.Column="0" x:Name="progressBar1" Width="280" Value="0" Maximum="0" HorizontalAlignment="Right" VerticalAlignment="Center"/>
-            <TextBlock Grid.Column="1" HorizontalAlignment="Center" VerticalAlignment="Center" Text="00/00"/>
+            <ProgressBar x:Name="cardBar" Grid.Column="0" Width="280" Value="0" Maximum="0" HorizontalAlignment="Right" VerticalAlignment="Center"/>
+            <TextBlock x:Name="txtCardBar" Grid.Column="1" HorizontalAlignment="Center" VerticalAlignment="Center" Text="00/00"/>
         </Grid>
         <Border Height="50" Width="400" Margin="0,0,0,500" BorderBrush="#f0f0f0" BorderThickness="1" CornerRadius="4,4,4,4" Background="#fbfbfb">
             <TextBlock TextWrapping="Wrap" HorizontalAlignment="Center" VerticalAlignment="Center"
@@ -23,7 +23,7 @@
         </Border>
         <TextBox x:Name="txtQuestion" AcceptsReturn="True" TextWrapping="Wrap" MaxHeight="200" Width="400" Margin="0,0,0,250" BorderBrush="#f0f0f0" BorderThickness="1" CornerRadius="4,4,4,4" Background="White" 
                 ScrollViewer.VerticalScrollBarVisibility="Auto"/>
-        <Button Height="150" Grid.Column="0" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="0,0,460,0">
+        <Button x:Name="btnBeforeCard" Height="150" Grid.Column="0" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="0,0,460,0" Click="BtnBeforeCard_OnClick">
             <StackPanel Orientation="Horizontal">
                 <SymbolIcon Symbol="Previous"/>
             </StackPanel>
@@ -37,7 +37,21 @@
                 </ResourceDictionary>
             </Button.Resources>
         </Button>
-        <Button Height="150" Grid.Column="0" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="460,0,0,0">
+        <Button x:Name="btnCloseNewCard" Visibility="Collapsed" Height="150" Grid.Column="0" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="0,0,560,0" Click="BtnCloseNewCard_OnClick">
+            <StackPanel Orientation="Horizontal">
+                <SymbolIcon Foreground="#c50500" Symbol="Cancel"/>
+            </StackPanel>
+            <Button.Resources>
+                <ResourceDictionary>
+                    <ResourceDictionary.ThemeDictionaries>
+                        <ResourceDictionary x:Key="Light">
+                            <SolidColorBrush x:Key="ButtonBackgroundPointerOver" Color="#40c50500"/>
+                        </ResourceDictionary>
+                    </ResourceDictionary.ThemeDictionaries>
+                </ResourceDictionary>
+            </Button.Resources>
+        </Button>
+        <Button x:Name="btnNextCard" Height="150" Grid.Column="0" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="460,0,0,0" Click="BtnNextCard_OnClick">
             <StackPanel Orientation="Horizontal">
                 <SymbolIcon Symbol="Next"/>
             </StackPanel>
@@ -51,6 +65,20 @@
                 </ResourceDictionary>
             </Button.Resources>
         </Button>
+        <Button Height="150" Grid.Column="0" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="560,0,0,0" Click="BtnNewCard_OnClick">
+            <StackPanel Orientation="Horizontal">
+                <SymbolIcon x:Name="sbIconNewCard" Symbol="Add"/>
+            </StackPanel>
+            <Button.Resources>
+                <ResourceDictionary>
+                    <ResourceDictionary.ThemeDictionaries>
+                        <ResourceDictionary x:Key="Light">
+                            <SolidColorBrush x:Name="btnNewCardBrush" x:Key="ButtonBackgroundPointerOver" Color="#B0A695"/>
+                        </ResourceDictionary>
+                    </ResourceDictionary.ThemeDictionaries>
+                </ResourceDictionary>
+            </Button.Resources>
+        </Button>
         <Border Height="50" Width="400" Margin="0,0,0,0" BorderBrush="#f0f0f0" BorderThickness="1" CornerRadius="4,4,4,4" Background="#fbfbfb">
             <TextBlock TextWrapping="Wrap" HorizontalAlignment="Center" VerticalAlignment="Center"
                     Text="정답" FontSize="16" ScrollViewer.VerticalScrollBarVisibility="Auto"/>
@@ -59,13 +87,14 @@
                 ScrollViewer.VerticalScrollBarVisibility="Auto"/>
         <Grid Height="50" Width="400" Margin="0,500,0,0">
             <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="200"/>
+                <ColumnDefinition/>
+                <ColumnDefinition/>
                 <ColumnDefinition/>
             </Grid.ColumnDefinitions>
-            <Button Grid.Column="0" HorizontalAlignment="Center" >
+            <Button x:Name="btnDelete" Grid.Column="0" HorizontalAlignment="Center" Click="BtnDelete_OnClick">
                 <StackPanel Orientation="Horizontal">
                     <TextBlock Text="삭제" />
-                    <SymbolIcon Symbol="Cancel" Foreground="#c50500" Margin="10,0,0,0"/>
+                    <SymbolIcon Symbol="Delete" Foreground="#c50500" Margin="10,0,0,0"/>
                 </StackPanel>
                 <Button.Resources>
                     <ResourceDictionary>
@@ -77,10 +106,25 @@
                     </ResourceDictionary>
                 </Button.Resources>
             </Button>
-            <Button Grid.Column="1" HorizontalAlignment="Center" Click="BtnSave_OnClick">
+            <Button x:Name="btnRepair" Grid.Column="1" HorizontalAlignment="Center" Click="BtnRepair_OnClick">
+                <StackPanel Orientation="Horizontal">
+                    <TextBlock Text="수정" />
+                    <SymbolIcon Symbol="Repair" Foreground="#128b44" Margin="10,0,0,0"/>
+                </StackPanel>
+                <Button.Resources>
+                    <ResourceDictionary>
+                        <ResourceDictionary.ThemeDictionaries>
+                            <ResourceDictionary x:Key="Light">
+                                <SolidColorBrush x:Key="ButtonBackgroundPointerOver" Color="#40128b44"/>
+                            </ResourceDictionary>
+                        </ResourceDictionary.ThemeDictionaries>
+                    </ResourceDictionary>
+                </Button.Resources>
+            </Button>
+            <Button x:Name="btnSave" Grid.Column="2" HorizontalAlignment="Center" Click="BtnSave_OnClick">
                 <StackPanel Orientation="Horizontal">
                     <TextBlock Text="저장" />
-                    <SymbolIcon Symbol="Accept" Foreground="#128b44" Margin="10,0,0,0"/>
+                    <SymbolIcon Symbol="Save" Foreground="#128b44" Margin="10,0,0,0"/>
                 </StackPanel>
                 <Button.Resources>
                     <ResourceDictionary>
@@ -93,5 +137,12 @@
                 </Button.Resources>
             </Button>
         </Grid>
+        <Button x:Name="btnLoadFile" HorizontalAlignment="Right" VerticalAlignment="Top" Margin="0,40,40,0" Tag="open" Click="BtnLoadFile_OnClick">
+            <Viewbox MaxHeight="40" MaxWidth="40">
+                <SymbolIcon Symbol="OpenLocal"/>
+            </Viewbox>
+        </Button>
+        <StackPanel x:Name="MyPanel" Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Center">
+        </StackPanel>
     </Grid>
 </Page>
