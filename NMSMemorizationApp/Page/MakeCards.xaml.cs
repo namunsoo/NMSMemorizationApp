@@ -17,6 +17,7 @@ using Windows.Storage.Pickers;
 using Windows.Storage;
 using WinRT.Interop;
 using NMSMemorizationApp.Model;
+using System.Text;
 
 // To learn more about WinUI, the WinUI project structure,
 // and more about our project templates, see: http://aka.ms/winui-project-info.
@@ -37,6 +38,7 @@ namespace NMSMemorizationApp.Page
             this.InitializeComponent();
         }
 
+		#region [| 이전 카드 버튼|]
 		private async void BtnBeforeCard_OnClick(object sender, RoutedEventArgs e)
 		{
 			if (cardNum <= 0)
@@ -62,7 +64,9 @@ namespace NMSMemorizationApp.Page
 				this.txtAnswer.Text = card.Answer.Replace("&#44;", ",");
 			}
 		}
+		#endregion
 
+		#region [| 다음 카드 버튼|]
 		private async void BtnNextCard_OnClick(object sender, RoutedEventArgs e)
 		{
 			if (cardNum >= cardList.Count - 1)
@@ -89,7 +93,9 @@ namespace NMSMemorizationApp.Page
 				this.txtAnswer.Text = card.Answer.Replace("&#44;", ",");
 			}
 		}
+		#endregion
 
+		#region [| 새로운 카드 추가 버튼|]
 		private async void BtnNewCard_OnClick(object sender, RoutedEventArgs e)
 		{
 			if (isNewCard)
@@ -143,7 +149,9 @@ namespace NMSMemorizationApp.Page
 				AddCardSetting(true);
 			}
 		}
+		#endregion
 
+		#region [| 새로운 카드 추가 취소 버튼|]
 		private async void BtnCloseNewCard_OnClick(object sender, RoutedEventArgs e)
 		{
 			if (!string.IsNullOrEmpty(this.txtQuestion.Text) || !string.IsNullOrEmpty(this.txtAnswer.Text))
@@ -170,24 +178,101 @@ namespace NMSMemorizationApp.Page
 				AddCardSetting(false);
 			}
 		}
+		#endregion
 
+		#region [| 카드 저장 버튼|]
 		private async void BtnSave_OnClick(object sender, RoutedEventArgs e)
 		{
-			var folderPicker = new FolderPicker();
-			folderPicker.SuggestedStartLocation = PickerLocationId.Desktop;
-			folderPicker.FileTypeFilter.Add("*");
-
-			nint windowHandle = WindowNative.GetWindowHandle(App.Window);
-			InitializeWithWindow.Initialize(folderPicker, windowHandle);
-
-			StorageFolder folder = await folderPicker.PickSingleFolderAsync();
-
-			if (folder != null)
+			if (cardList.Count != 0)
 			{
-				// Do something with the file.
+				var savePicker = new Windows.Storage.Pickers.FileSavePicker();
+				savePicker.SuggestedStartLocation = PickerLocationId.Desktop;
+				// 파일 저장 방식 설정 "*" 는 전부
+				// ex) savePicker.FileTypeFilter.Add("*");
+				savePicker.FileTypeChoices.Add("csv파일", new List<string>() { ".csv" }); // .csv 파일로 저장
+				// 기본으로 설정시킬 파일 이름
+				savePicker.SuggestedFileName = "NewCard";
+				nint windowHandle = WindowNative.GetWindowHandle(App.Window);
+				InitializeWithWindow.Initialize(savePicker, windowHandle);
+				Windows.Storage.StorageFile file = await savePicker.PickSaveFileAsync();
+				if (file != null)
+				{
+					//StringBuilder cardCsv = new StringBuilder();
+					//for (int i = 0; i < cardList.Count; i++)
+					//{
+					//	cardCsv.Append(cardList[i].Question + ",");
+					//	cardCsv.Append(cardList[i].Answer + ",");
+					//	cardCsv.Append(i != (cardList.Count - 1) ? "0,":"0");
+					//}
+
+					List<string> cardCsv = new List<string>();
+					string line = "question,answer,isMemoized";
+					cardCsv.Add(line);
+					for (int i = 0; i < cardList.Count; i++)
+					{
+						line = cardList[i].Question + "," + cardList[i].Answer + "," + "0";
+						cardCsv.Add(line);
+					}
+					// Prevent updates to the remote version of the file until
+					// we finish making changes and call CompleteUpdatesAsync.
+					Windows.Storage.CachedFileManager.DeferUpdates(file);
+
+					// 파일 내용 작성
+					await Windows.Storage.FileIO.WriteLinesAsync(file, cardCsv);
+					//await Windows.Storage.FileIO.WriteTextAsync(file, cardCsv.ToString());
+
+					// Let Windows know that we're finished changing the file so
+					// the other app can update the remote version of the file.
+					// Completing updates may require Windows to ask for user input.
+					Windows.Storage.Provider.FileUpdateStatus status =
+						await Windows.Storage.CachedFileManager.CompleteUpdatesAsync(file);
+					if (status == Windows.Storage.Provider.FileUpdateStatus.Complete)
+					{
+						ContentDialog noDataDialog = new ContentDialog
+						{
+							Title = "카드 저장 완료",
+							Content = "카드가 정상적으로 저장되었습니다.",
+							CloseButtonText = "확인"
+						};
+
+						// 따로 오픈할 경로를 지정해주지 않으면 프로퍼티 오류 발생
+						noDataDialog.XamlRoot = this.MyPanel.XamlRoot;
+
+						ContentDialogResult result = await noDataDialog.ShowAsync();
+					}
+					else
+					{
+						ContentDialog noDataDialog = new ContentDialog
+						{
+							Title = "카드 저장 실패",
+							Content = "카드 저장에 실패했습니다.",
+							CloseButtonText = "확인"
+						};
+
+						// 따로 오픈할 경로를 지정해주지 않으면 프로퍼티 오류 발생
+						noDataDialog.XamlRoot = this.MyPanel.XamlRoot;
+
+						ContentDialogResult result = await noDataDialog.ShowAsync();
+					}
+				} 
+			}
+			else {
+				ContentDialog noDataDialog = new ContentDialog
+				{
+					Title = "카드 저장 실패",
+					Content = "저장할 카드가 없습니다.",
+					CloseButtonText = "확인"
+				};
+
+				// 따로 오픈할 경로를 지정해주지 않으면 프로퍼티 오류 발생
+				noDataDialog.XamlRoot = this.MyPanel.XamlRoot;
+
+				ContentDialogResult result = await noDataDialog.ShowAsync();
 			}
 		}
+		#endregion
 
+		#region [| 카드 수정 버튼|]
 		private async void BtnRepair_OnClick(object sender, RoutedEventArgs e)
 		{
 			if (cardList.Count != 0 && !string.IsNullOrEmpty(this.txtQuestion.Text) && !string.IsNullOrEmpty(this.txtQuestion.Text))
@@ -215,7 +300,7 @@ namespace NMSMemorizationApp.Page
 				ContentDialog noDataDialog = new ContentDialog
 				{
 					Title = "수정할 수 없습니다.",
-					Content = cardList.Count != 0 ? "문제나 정답은 비어있을 수 없습니다." : "아직 카드가 없습니다.",
+					Content = cardList.Count != 0 ? "문제나 정답은 비어있을 수 없습니다." : "수정할 카드가 없습니다.",
 					CloseButtonText = "확인"
 				};
 
@@ -225,41 +310,63 @@ namespace NMSMemorizationApp.Page
 				ContentDialogResult result = await noDataDialog.ShowAsync();
 			}
 		}
+		#endregion
 
+		#region [| 카드 삭제 버튼|]
 		private async void BtnDelete_OnClick(object sender, RoutedEventArgs e)
 		{
-			ContentDialog deleteDialog = new ContentDialog
+			if (cardList.Count != 0)
 			{
-				Title = "삭제 확인",
-				Content = "삭제 하시겠습니까?",
-				PrimaryButtonText = "삭제",
-				CloseButtonText = "취소"
-			};
-
-			// 따로 오픈할 경로를 지정해주지 않으면 프로퍼티 오류 발생
-			deleteDialog.XamlRoot = this.MyPanel.XamlRoot;
-
-			ContentDialogResult result = await deleteDialog.ShowAsync();
-
-			if (result == ContentDialogResult.Primary)
-			{
-				cardList.RemoveAt(cardNum);
-				if (cardNum > 0)
+				ContentDialog deleteDialog = new ContentDialog
 				{
-					cardNum--;
+					Title = "삭제 확인",
+					Content = "삭제 하시겠습니까?",
+					PrimaryButtonText = "삭제",
+					CloseButtonText = "취소"
+				};
+
+				// 따로 오픈할 경로를 지정해주지 않으면 프로퍼티 오류 발생
+				deleteDialog.XamlRoot = this.MyPanel.XamlRoot;
+
+				ContentDialogResult result = await deleteDialog.ShowAsync();
+
+				if (result == ContentDialogResult.Primary)
+				{
+					cardList.RemoveAt(cardNum);
+					if (cardNum > 0)
+					{
+						cardNum--;
+					}
+					int cardCount = cardList.Count;
+					CardInfo card = cardCount != 0 ? cardList[cardNum] : new CardInfo();
+					this.txtQuestion.Text = card.Question.Replace("&#44;", ",");
+					this.txtAnswer.Text = card.Answer.Replace("&#44;", ",");
+					this.cardBar.Value = (cardNum + 1);
+					this.cardBar.Maximum = cardCount;
+					this.txtCardBar.Text = (cardNum + 1) + " / " + cardCount;
 				}
-				int cardCount = cardList.Count;
-				CardInfo card = cardCount != 0 ? cardList[cardNum] : new CardInfo();
-				this.txtQuestion.Text = card.Question.Replace("&#44;", ",");
-				this.txtAnswer.Text = card.Answer.Replace("&#44;", ",");
-				this.cardBar.Value = (cardNum + 1);
-				this.cardBar.Maximum = cardCount;
-				this.txtCardBar.Text = (cardNum +1) + " / " + cardCount;
+			} 
+			else
+			{
+				ContentDialog noDataDialog = new ContentDialog
+				{
+					Title = "수정할 수 없습니다.",
+					Content = "카드가 없습니다.",
+					CloseButtonText = "확인"
+				};
+
+				// 따로 오픈할 경로를 지정해주지 않으면 프로퍼티 오류 발생
+				noDataDialog.XamlRoot = this.MyPanel.XamlRoot;
+
+				ContentDialogResult result = await noDataDialog.ShowAsync();
 			}
 		}
+		#endregion
 
+		#region [| 카드(CSV 파일) 불러오기 버튼|]
 		private async void BtnLoadFile_OnClick(object sender, RoutedEventArgs e)
 		{
+			bool checkOpen = true;
 			if (cardList.Count > 0)
 			{
 				ContentDialog deleteDialog = new ContentDialog
@@ -275,16 +382,54 @@ namespace NMSMemorizationApp.Page
 
 				ContentDialogResult result = await deleteDialog.ShowAsync();
 
-				if (result == ContentDialogResult.Primary)
+				if (result != ContentDialogResult.Primary)
 				{
-					// SCV 파일 로드
+					checkOpen = false;
 				}
 			}
-			else
+
+			if (checkOpen)
 			{
-				// SCV 파일 로드
+				FileOpenPicker fileOpenPicker = new FileOpenPicker();
+				fileOpenPicker.FileTypeFilter.Add(".csv");
+				nint windowHandle = WindowNative.GetWindowHandle(App.Window);
+				InitializeWithWindow.Initialize(fileOpenPicker, windowHandle);
+
+				StorageFile file = await fileOpenPicker.PickSingleFileAsync();
+				if (file != null)
+				{
+					using (StreamReader sr = new StreamReader(file.Path))
+					{
+						string line = string.Empty;
+						string[] property = null;
+						cardList = new List<CardInfo>();
+						CardInfo card = null;
+						int i = 0;
+						while (!sr.EndOfStream)
+						{
+							line = sr.ReadLine();
+							if (i != 0)
+							{
+								property = line.Split(',');
+								card = new CardInfo(file.Path, file.Name.Substring(0, file.Name.Length - 4), i, property[0], property[1], Convert.ToInt32(property[2]));
+								cardList.Add(card);
+							}
+							i++;
+						}
+
+						cardNum = 0;
+						card = cardList[0];
+						this.cardBar.Value = cardNum + 1;
+						this.cardBar.Maximum = cardList.Count;
+						this.txtCardBar.Text = (cardNum + 1) + " / " + cardList.Count;
+						this.txtQuestion.Text = card.Question.Replace("&#44;", ",");
+						this.txtAnswer.Text = card.Answer.Replace("&#44;", ",");
+					}
+
+				}
 			}
 		}
+		#endregion
 
 		public void AddCardSetting(bool isAddCard)
 		{
