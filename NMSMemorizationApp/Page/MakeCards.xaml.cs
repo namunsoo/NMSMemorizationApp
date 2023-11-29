@@ -197,14 +197,6 @@ namespace NMSMemorizationApp.Page
 				Windows.Storage.StorageFile file = await savePicker.PickSaveFileAsync();
 				if (file != null)
 				{
-					//StringBuilder cardCsv = new StringBuilder();
-					//for (int i = 0; i < cardList.Count; i++)
-					//{
-					//	cardCsv.Append(cardList[i].Question + ",");
-					//	cardCsv.Append(cardList[i].Answer + ",");
-					//	cardCsv.Append(i != (cardList.Count - 1) ? "0,":"0");
-					//}
-
 					List<string> cardCsv = new List<string>();
 					string line = "question,answer,isMemoized";
 					cardCsv.Add(line);
@@ -219,7 +211,6 @@ namespace NMSMemorizationApp.Page
 
 					// 파일 내용 작성
 					await Windows.Storage.FileIO.WriteLinesAsync(file, cardCsv);
-					//await Windows.Storage.FileIO.WriteTextAsync(file, cardCsv.ToString());
 
 					// Let Windows know that we're finished changing the file so
 					// the other app can update the remote version of the file.
@@ -388,45 +379,64 @@ namespace NMSMemorizationApp.Page
 				}
 			}
 
-			if (checkOpen)
-			{
-				FileOpenPicker fileOpenPicker = new FileOpenPicker();
-				fileOpenPicker.FileTypeFilter.Add(".csv");
-				nint windowHandle = WindowNative.GetWindowHandle(App.Window);
-				InitializeWithWindow.Initialize(fileOpenPicker, windowHandle);
-
-				StorageFile file = await fileOpenPicker.PickSingleFileAsync();
-				if (file != null)
+			try {
+				if (checkOpen)
 				{
-					using (StreamReader sr = new StreamReader(file.Path))
+					FileOpenPicker fileOpenPicker = new FileOpenPicker();
+					fileOpenPicker.FileTypeFilter.Add(".csv");
+					nint windowHandle = WindowNative.GetWindowHandle(App.Window);
+					InitializeWithWindow.Initialize(fileOpenPicker, windowHandle);
+
+					StorageFile file = await fileOpenPicker.PickSingleFileAsync();
+					if (file != null)
 					{
-						string line = string.Empty;
-						string[] property = null;
-						cardList = new List<CardInfo>();
-						CardInfo card = null;
-						int i = 0;
-						while (!sr.EndOfStream)
+						using (StreamReader sr = new StreamReader(file.Path))
 						{
-							line = sr.ReadLine();
-							if (i != 0)
+							string line = string.Empty;
+							string[] property = null;
+							cardList = new List<CardInfo>();
+							CardInfo card = null;
+							int i = 0;
+							while (!sr.EndOfStream)
 							{
-								property = line.Split(',');
-								card = new CardInfo(file.Path, file.Name.Substring(0, file.Name.Length - 4), i, property[0], property[1], Convert.ToInt32(property[2]));
-								cardList.Add(card);
+								line = sr.ReadLine();
+								if (i != 0)
+								{
+									property = line.Split(',');
+									card = new CardInfo(file.Path, file.Name.Substring(0, file.Name.Length - 4), i, property[0], property[1], Convert.ToInt32(property[2]));
+									cardList.Add(card);
+								}
+								i++;
 							}
-							i++;
+
+							cardNum = 0;
+							card = cardList[0];
+							this.cardBar.Value = cardNum + 1;
+							this.cardBar.Maximum = cardList.Count;
+							this.txtCardBar.Text = (cardNum + 1) + " / " + cardList.Count;
+							this.txtQuestion.Text = card.Question.Replace("&#44;", ",");
+							this.txtAnswer.Text = card.Answer.Replace("&#44;", ",");
 						}
 
-						cardNum = 0;
-						card = cardList[0];
-						this.cardBar.Value = cardNum + 1;
-						this.cardBar.Maximum = cardList.Count;
-						this.txtCardBar.Text = (cardNum + 1) + " / " + cardList.Count;
-						this.txtQuestion.Text = card.Question.Replace("&#44;", ",");
-						this.txtAnswer.Text = card.Answer.Replace("&#44;", ",");
 					}
-
 				}
+			} catch
+			{
+				cardList = new List<CardInfo>();
+				cardNum = 0;
+				isNewCard = false;
+
+				ContentDialog noDataDialog = new ContentDialog
+				{
+					Title = "오류",
+					Content = "파일을 불러오다 오류가 발생했습니다.",
+					CloseButtonText = "확인"
+				};
+
+				// 따로 오픈할 경로를 지정해주지 않으면 프로퍼티 오류 발생
+				noDataDialog.XamlRoot = this.MyPanel.XamlRoot;
+
+				ContentDialogResult result = await noDataDialog.ShowAsync();
 			}
 		}
 		#endregion

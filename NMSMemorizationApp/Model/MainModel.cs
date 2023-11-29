@@ -14,13 +14,13 @@ namespace NMSMemorizationApp.Model
 		public string Question { get; set; }
 		public string Answer { get; set; }
 		public int Memorized { get; set; }
-		public CardInfo(string FilePath = "", string FileName = "", int FileRow = 0, string Question = "", string Anwer = "", int Memorized = 0) 
+		public CardInfo(string FilePath = "", string FileName = "", int FileRow = 0, string Question = "", string Answer = "", int Memorized = 0) 
 		{
 			this.FilePath = FilePath;
 			this.FileName = FileName;
 			this.FileRow = FileRow;
 			this.Question = Question;
-			this.Answer = Anwer;
+			this.Answer = Answer;
 			this.Memorized = Memorized;
 		}
 	}
