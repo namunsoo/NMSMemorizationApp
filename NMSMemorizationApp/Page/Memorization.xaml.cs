@@ -216,6 +216,7 @@ namespace NMSMemorizationApp.Page
 			{
 				if (checkOpen)
 				{
+					this.cbbMemorizationOption.SelectedIndex = 0;
 					FolderPicker folderPicker = new FolderPicker();
 					folderPicker.SuggestedStartLocation = PickerLocationId.Desktop;
 					folderPicker.FileTypeFilter.Add("*");
@@ -225,6 +226,7 @@ namespace NMSMemorizationApp.Page
 					StorageFolder folder = await folderPicker.PickSingleFolderAsync();
 					if (folder != null)
 					{
+						cardFolder = folder.Path;
 						DirectoryInfo di = new DirectoryInfo(folder.Path);
 
 						string line = string.Empty;
@@ -319,20 +321,100 @@ namespace NMSMemorizationApp.Page
         }
 		#endregion
 
-		#region [| 설정 오픈 버튼|]
-		private void MemorizationOption_OnChange(object sender, RoutedEventArgs e)
+		#region [| 카드 옵션 변경 |]
+		private async void BtnChangeOption_OnClick(object sender, RoutedEventArgs e)
 		{
-			int option = ((ComboBox)sender).SelectedIndex;
-			switch (option)
+			//this.tgsRandom.Ison
+			//this.cbbMemorizationOption.SelectedIndex
+			if (!string.IsNullOrEmpty(cardFolder))
 			{
-				case 0:
-					break;
-				case 1:
-					break;
-				case 2:
-					break;
-				default:
-					break;
+				DirectoryInfo di = new DirectoryInfo(cardFolder);
+
+				string line = string.Empty;
+				string[] property = null;
+				cardList = new List<CardInfo>();
+				CardInfo card = null;
+				int i = 0;
+				int cardOption = this.cbbMemorizationOption.SelectedIndex;
+				foreach (FileInfo file in di.GetFiles())
+				{
+					if (file.Extension.ToLower().CompareTo(".csv") == 0)
+					{
+						line = string.Empty;
+						property = null;
+						i = 0;
+						using (StreamReader sr = new StreamReader(file.FullName))
+						{
+							while (!sr.EndOfStream)
+							{
+								line = sr.ReadLine();
+								if (i != 0)
+								{
+									property = line.Split(',');
+									switch (cardOption)
+									{
+										case 1:
+											if (Convert.ToInt32(property[2]) == 0)
+											{
+												card = new CardInfo(file.FullName, file.Name.Substring(0, file.Name.Length - 4), i, property[0], property[1], Convert.ToInt32(property[2]));
+												cardList.Add(card);
+											}
+											break;
+										case 2:
+											if (Convert.ToInt32(property[2]) == 1) { 
+												card = new CardInfo(file.FullName, file.Name.Substring(0, file.Name.Length - 4), i, property[0], property[1], Convert.ToInt32(property[2]));
+												cardList.Add(card);
+											}
+											break;
+										default:
+											card = new CardInfo(file.FullName, file.Name.Substring(0, file.Name.Length - 4), i, property[0], property[1], Convert.ToInt32(property[2]));
+											cardList.Add(card);
+											break;
+									}
+								}
+								i++;
+							}
+
+							if (this.tgsRandom.IsOn)
+							{
+								int k = 0;
+								Random rand = new Random();
+								for (i = cardList.Count - 1; i > 0; i--)
+								{
+									k = rand.Next(i + 1);
+									card = cardList[k];
+									cardList[k] = cardList[i];
+									cardList[i] = card;
+								}
+							}
+
+							cardNum = 0;
+							card = cardList[0];
+							this.cardBar.Value = cardNum + 1;
+							this.cardBar.Maximum = cardList.Count;
+							this.txtCardBar.Text = (cardNum + 1) + " / " + cardList.Count;
+							this.txtQuestion.Text = card.Question.Replace("&#44;", ",");
+							this.txtAnswer.Text = card.Answer.Replace("&#44;", ",");
+						}
+					}
+				}
+
+				((Button)sender).Tag = "open";
+				AniCloseSetting.Begin();
+			}
+			else
+			{
+				ContentDialog noDataDialog = new ContentDialog
+				{
+					Title = "폴더를 먼저 선택하세요.",
+					Content = "지정된 폴더가 없어 카드를 가져올 수 없습니다.",
+					CloseButtonText = "확인"
+				};
+
+				// 따로 오픈할 경로를 지정해주지 않으면 프로퍼티 오류 발생
+				noDataDialog.XamlRoot = this.MyPanel.XamlRoot;
+
+				ContentDialogResult result = await noDataDialog.ShowAsync();
 			}
 		}
 		#endregion
