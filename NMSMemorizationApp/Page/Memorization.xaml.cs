@@ -63,8 +63,8 @@ namespace NMSMemorizationApp.Page
 				this.cardBar.Value = cardNum + 1;
 				this.txtCardBar.Text = (cardNum + 1) + " / " + cardList.Count;
 				CardInfo card = cardList[cardNum];
-				this.txtQuestion.Text = card.Question.Replace("&#44;", ",");
-				this.txtAnswer.Text = card.Answer.Replace("&#44;", ",");
+				this.txtQuestion.Text = card.Question.Replace("&#44;", ",").Replace("&#92;r", "\r");
+				this.txtAnswer.Text = card.Answer.Replace("&#44;", ",").Replace("&#92;r", "\r");
 			}
 		}
 		#endregion
@@ -92,8 +92,8 @@ namespace NMSMemorizationApp.Page
 				this.cardBar.Value = cardNum + 1;
 				this.txtCardBar.Text = (cardNum + 1) + " / " + cardList.Count;
 				CardInfo card = cardList[cardNum];
-				this.txtQuestion.Text = card.Question.Replace("&#44;", ",");
-				this.txtAnswer.Text = card.Answer.Replace("&#44;", ",");
+				this.txtQuestion.Text = card.Question.Replace("&#44;", ",").Replace("&#92;r", "\r");
+				this.txtAnswer.Text = card.Answer.Replace("&#44;", ",").Replace("&#92;r", "\r");
 			}
 		}
 		#endregion
@@ -126,10 +126,10 @@ namespace NMSMemorizationApp.Page
 				this.btnMemorizationFailure.IsEnabled = true;
 				this.btnSetting.IsEnabled = true;
 				this.btnLoadFile.IsEnabled = true;
-				UpdateCard(cardList[cardNum].FilePath, cardList[cardNum].FileRow, this.txtQuestion.Text.Replace(",", "&#44;"), this.txtAnswer.Text.Replace(",", "&#44;"), cardList[cardNum].Memorized);
+				UpdateCard(cardList[cardNum].FilePath, cardList[cardNum].FileRow, this.txtQuestion.Text.Replace(",", "&#44;").Replace("\r", "&#92;r"), this.txtAnswer.Text.Replace(",", "&#44;").Replace("\r", "&#92;r"), cardList[cardNum].Memorized);
 
-				cardList[cardNum].Question = this.txtQuestion.Text.Replace(",", "&#44;");
-				cardList[cardNum].Answer = this.txtAnswer.Text.Replace(",", "&#44;");
+				cardList[cardNum].Question = this.txtQuestion.Text.Replace(",", "&#44;").Replace("\r", "&#92;r");
+				cardList[cardNum].Answer = this.txtAnswer.Text.Replace(",", "&#44;").Replace("\r", "&#92;r");
 			}
 			else
 			{
@@ -168,8 +168,8 @@ namespace NMSMemorizationApp.Page
 				this.cardBar.Value = cardNum + 1;
 				this.cardBar.Maximum = cardList.Count;
 				this.txtCardBar.Text = (cardNum + 1) + " / " + cardList.Count;
-				this.txtQuestion.Text = card.Question.Replace("&#44;", ",");
-				this.txtAnswer.Text = card.Answer.Replace("&#44;", ",");
+				this.txtQuestion.Text = card.Question.Replace("&#44;", ",").Replace("&#92;r", "\r");
+				this.txtAnswer.Text = card.Answer.Replace("&#44;", ",").Replace("&#92;r", "\r");
 			}
 		}
 		#endregion
@@ -260,14 +260,14 @@ namespace NMSMemorizationApp.Page
 									this.cardBar.Value = cardNum + 1;
 									this.cardBar.Maximum = cardList.Count;
 									this.txtCardBar.Text = (cardNum + 1) + " / " + cardList.Count;
-									this.txtQuestion.Text = card.Question.Replace("&#44;", ",");
-									this.txtAnswer.Text = card.Answer.Replace("&#44;", ",");
+									this.txtQuestion.Text = card.Question.Replace("&#44;", ",").Replace("&#92;r", "\r");
+									this.txtAnswer.Text = card.Answer.Replace("&#44;", ",").Replace("&#92;r", "\r");
 								}
 							}
 						}
 					}
 				}
-			} catch
+			} catch (Exception ex)
 			{
 				cardList = new List<CardInfo>();
 				cardNum = 0;
@@ -291,7 +291,7 @@ namespace NMSMemorizationApp.Page
 		#region [| 암기 완료 버튼|]
 		private void BtnMemorizationCompleted_OnClick(object sender, RoutedEventArgs e)
 		{
-			UpdateCard(cardList[cardNum].FilePath, cardList[cardNum].FileRow, this.txtQuestion.Text.Replace(",", "&#44;"), this.txtAnswer.Text.Replace(",", "&#44;"), 1);
+			UpdateCard(cardList[cardNum].FilePath, cardList[cardNum].FileRow, this.txtQuestion.Text.Replace(",", "&#44;").Replace("\r", "&#92;r"), this.txtAnswer.Text.Replace(",", "&#44;").Replace("\r", "&#92;r"), 1);
 			BtnNextCard_OnClick(sender, e);
 		}
 		#endregion
@@ -299,7 +299,7 @@ namespace NMSMemorizationApp.Page
 		#region [| 암기 실패 버튼|]
 		private void BtnMemorizationFailure_OnClick(object sender, RoutedEventArgs e)
 		{
-			UpdateCard(cardList[cardNum].FilePath, cardList[cardNum].FileRow, this.txtQuestion.Text.Replace(",", "&#44;"), this.txtAnswer.Text.Replace(",", "&#44;"), 0);
+			UpdateCard(cardList[cardNum].FilePath, cardList[cardNum].FileRow, this.txtQuestion.Text.Replace(",", "&#44;").Replace("\r", "&#92;r"), this.txtAnswer.Text.Replace(",", "&#44;").Replace("\r", "&#92;r"), 0);
 			BtnNextCard_OnClick(sender, e);
 		}
 		#endregion
@@ -393,8 +393,8 @@ namespace NMSMemorizationApp.Page
 							this.cardBar.Value = cardNum + 1;
 							this.cardBar.Maximum = cardList.Count;
 							this.txtCardBar.Text = (cardNum + 1) + " / " + cardList.Count;
-							this.txtQuestion.Text = card.Question.Replace("&#44;", ",");
-							this.txtAnswer.Text = card.Answer.Replace("&#44;", ",");
+							this.txtQuestion.Text = card.Question.Replace("&#44;", ",").Replace("&#92;r", "\r");
+							this.txtAnswer.Text = card.Answer.Replace("&#44;", ",").Replace("&#92;r", "\r");
 						}
 					}
 				}

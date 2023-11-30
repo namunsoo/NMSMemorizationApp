@@ -60,8 +60,8 @@ namespace NMSMemorizationApp.Page
 				this.cardBar.Value = cardNum + 1;
 				this.txtCardBar.Text = (cardNum + 1) + " / " + cardList.Count;
 				CardInfo card = cardList[cardNum];
-				this.txtQuestion.Text = card.Question.Replace("&#44;", ",");
-				this.txtAnswer.Text = card.Answer.Replace("&#44;", ",");
+				this.txtQuestion.Text = card.Question.Replace("&#44;", ",").Replace("&#92;r", "\r"); ;
+				this.txtAnswer.Text = card.Answer.Replace("&#44;", ",").Replace("&#92;r", "\r"); ;
 			}
 		}
 		#endregion
@@ -89,8 +89,8 @@ namespace NMSMemorizationApp.Page
 				this.cardBar.Value = cardNum + 1;
 				this.txtCardBar.Text = (cardNum + 1) + " / " + cardList.Count;
 				CardInfo card = cardList[cardNum];
-				this.txtQuestion.Text = card.Question.Replace("&#44;", ",");
-				this.txtAnswer.Text = card.Answer.Replace("&#44;", ",");
+				this.txtQuestion.Text = card.Question.Replace("&#44;", ",").Replace("&#92;r", "\r"); ;
+				this.txtAnswer.Text = card.Answer.Replace("&#44;", ",").Replace("&#92;r", "\r"); ;
 			}
 		}
 		#endregion
@@ -131,8 +131,8 @@ namespace NMSMemorizationApp.Page
 				else
 				{
 					CardInfo card = new CardInfo();
-					card.Question = this.txtQuestion.Text.Replace(",", "&#44;");
-					card.Answer = this.txtAnswer.Text.Replace(",", "&#44;");
+					card.Question = this.txtQuestion.Text.Replace(",", "&#44;").Replace("\r", "&#92;r");
+					card.Answer = this.txtAnswer.Text.Replace(",", "&#44;").Replace("\r", "&#92;r");
 					cardList.Add(card);
 
 					int cardCount = cardList.Count;
@@ -283,8 +283,8 @@ namespace NMSMemorizationApp.Page
 
 				if (result == ContentDialogResult.Primary)
 				{
-					cardList[cardNum].Question = this.txtQuestion.Text.Replace(",", "&#44;");
-					cardList[cardNum].Answer = this.txtAnswer.Text.Replace(",", "&#44;");
+					cardList[cardNum].Question = this.txtQuestion.Text.Replace(",", "&#44;").Replace("\r", "&#92;r");
+					cardList[cardNum].Answer = this.txtAnswer.Text.Replace(",", "&#44;").Replace("\r", "&#92;r");
 				}
 			} else 
 			{
@@ -330,8 +330,8 @@ namespace NMSMemorizationApp.Page
 					}
 					int cardCount = cardList.Count;
 					CardInfo card = cardCount != 0 ? cardList[cardNum] : new CardInfo();
-					this.txtQuestion.Text = card.Question.Replace("&#44;", ",");
-					this.txtAnswer.Text = card.Answer.Replace("&#44;", ",");
+					this.txtQuestion.Text = card.Question.Replace("&#44;", ",").Replace("&#92;r", "\r"); ;
+					this.txtAnswer.Text = card.Answer.Replace("&#44;", ",").Replace("&#92;r", "\r"); ;
 					this.cardBar.Value = (cardNum + 1);
 					this.cardBar.Maximum = cardCount;
 					this.txtCardBar.Text = (cardNum + 1) + " / " + cardCount;
@@ -414,8 +414,8 @@ namespace NMSMemorizationApp.Page
 							this.cardBar.Value = cardNum + 1;
 							this.cardBar.Maximum = cardList.Count;
 							this.txtCardBar.Text = (cardNum + 1) + " / " + cardList.Count;
-							this.txtQuestion.Text = card.Question.Replace("&#44;", ",");
-							this.txtAnswer.Text = card.Answer.Replace("&#44;", ",");
+							this.txtQuestion.Text = card.Question.Replace("&#44;", ",").Replace("&#92;r", "\r");
+							this.txtAnswer.Text = card.Answer.Replace("&#44;", ",").Replace("&#92;r", "\r");
 						}
 
 					}
@@ -463,8 +463,8 @@ namespace NMSMemorizationApp.Page
 				isNewCard = isAddCard;
 				this.btnCloseNewCard.Visibility = Visibility.Collapsed;
 				CardInfo card = cardList.Count != 0 ? cardList[cardNum] : new CardInfo();
-				this.txtQuestion.Text = card.Question.Replace("&#44;", ",");
-				this.txtAnswer.Text = card.Answer.Replace("&#44;", ",");
+				this.txtQuestion.Text = card.Question.Replace("&#44;", ",").Replace("&#92;r", "\r");
+				this.txtAnswer.Text = card.Answer.Replace("&#44;", ",").Replace("&#92;r", "\r");
 				this.btnBeforeCard.IsEnabled = true;
 				this.btnNextCard.IsEnabled = true;
 				this.btnDelete.IsEnabled = true;
