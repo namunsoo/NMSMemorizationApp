@@ -187,8 +187,7 @@ namespace NMSMemorizationApp.Page
 			{
 				var savePicker = new Windows.Storage.Pickers.FileSavePicker();
 				savePicker.SuggestedStartLocation = PickerLocationId.Desktop;
-				// 파일 저장 방식 설정 "*" 는 전부
-				// ex) savePicker.FileTypeFilter.Add("*");
+				// 파일 저장 방식 설정
 				savePicker.FileTypeChoices.Add("csv파일", new List<string>() { ".csv" }); // .csv 파일로 저장
 				// 기본으로 설정시킬 파일 이름
 				savePicker.SuggestedFileName = "NewCard";
