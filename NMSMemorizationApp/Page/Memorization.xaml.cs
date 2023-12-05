@@ -193,8 +193,8 @@ namespace NMSMemorizationApp.Page
 			{
 				ContentDialog deleteDialog = new ContentDialog
 				{
-					Title = "기존에 작성중인 카드가 있습니다.",
-					Content = "카드를 불러오면 기존에 작성중인 카드는 사라집니다.",
+					Title = "기존에 암기중인 카드가 있습니다.",
+					Content = "카드를 불러오면 기존에 암기중인 카드는 사라집니다.",
 					PrimaryButtonText = "불러오기",
 					CloseButtonText = "취소"
 				};
