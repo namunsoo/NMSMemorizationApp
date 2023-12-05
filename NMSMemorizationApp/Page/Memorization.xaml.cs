@@ -34,10 +34,8 @@ namespace NMSMemorizationApp.Page
 		}
 
 		private List<CardInfo> cardList = new List<CardInfo>();
-		private List<CardInfo> cardTemp = new List<CardInfo>();
 		private string cardFolder = string.Empty;
 		private int cardNum = 0;
-		private bool isNewCard = false;
 
 
 		#region [| 이전 카드 버튼|]
@@ -271,7 +269,6 @@ namespace NMSMemorizationApp.Page
 			{
 				cardList = new List<CardInfo>();
 				cardNum = 0;
-				isNewCard = false;
 
 				ContentDialog noDataDialog = new ContentDialog
 				{
