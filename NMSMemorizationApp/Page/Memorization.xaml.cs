@@ -70,6 +70,7 @@ namespace NMSMemorizationApp.Page
 		#region [| 다음 카드 버튼|]
 		private async void BtnNextCard_OnClick(object sender, RoutedEventArgs e)
 		{
+            this.txtAnswer.Visibility = Visibility.Collapsed;
 			if (cardNum >= cardList.Count - 1)
 			{
 				ContentDialog noDataDialog = new ContentDialog
@@ -86,7 +87,7 @@ namespace NMSMemorizationApp.Page
 			}
 			else
 			{
-				cardNum++;
+                cardNum++;
 				this.cardBar.Value = cardNum + 1;
 				this.txtCardBar.Text = (cardNum + 1) + " / " + cardList.Count;
 				CardInfo card = cardList[cardNum];
