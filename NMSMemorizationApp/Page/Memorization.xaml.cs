@@ -394,7 +394,8 @@ namespace NMSMemorizationApp.Page
 							this.cardBar.Value = cardNum + 1;
 							this.cardBar.Maximum = cardList.Count;
 							this.txtCardBar.Text = (cardNum + 1) + " / " + cardList.Count;
-							this.txtQuestion.Text = card.Question.Replace("&#44;", ",").Replace("&#92;r", "\r");
+                            this.txtCardDivision.Text = card.FileName;
+                            this.txtQuestion.Text = card.Question.Replace("&#44;", ",").Replace("&#92;r", "\r");
 							this.txtAnswer.Text = card.Answer.Replace("&#44;", ",").Replace("&#92;r", "\r");
 						}
 					}
